@@ -148,16 +148,13 @@ final class OtherHeatApkBuilder {
                     replacement.setSize(bytes.length);
                     replacement.setCompressedSize(bytes.length);
                     replacement.setCrc(crc.getValue());
-                    int nameBytes = name.getBytes(StandardCharsets.UTF_8).length;
-                    int padding = (4 - (int) ((count.bytes + 30 + nameBytes + 4) % 4)) % 4;
-                    byte[] extra = new byte[4 + padding];
-                    extra[0] = (byte) 0xd9;
-                    extra[1] = 0x35;
-                    extra[2] = (byte) padding;
-                    replacement.setExtra(extra);
+                    replacement.setExtra(ZipAlignment.extraForStored(name,
+                            original.getTime(), count.bytes));
                 }
                 target.putNextEntry(replacement);
                 if (original.getMethod() == ZipEntry.STORED && count.bytes % 4 != 0) {
+                    android.util.Log.e("VseeZipAlign", "Misaligned entry " + name
+                            + " at offset " + count.bytes);
                     throw new HeatLiveApkBuilder.BuildFailure("ZIP_ALIGNMENT_FAILED");
                 }
                 target.write(bytes);
