@@ -6,7 +6,7 @@ The screen has two actions: **Check compatibility** and **Make APKs**. The build
 
 ## Current status
 
-Version **0.7.15** (`versionCode` 22) adds original Heat Live 5.9.5 support and a signed compatibility catalog. When you select **Check compatibility**, the builder can fetch reviewed instructions for later original-app updates without requiring a new builder install. It keeps the built-in supported versions available offline. New app code still needs a reviewed template; an unrecognized update stops safely. See [what changed in 0.7.15](docs/RELEASE-0.7.15.md).
+Version **0.7.16** (`versionCode` 23) adds reviewed compatibility data for original Heat Live 5.9.6, Live Ultra 5.8.1, and Live Ultra+ 5.8.1. **Check compatibility** downloads their signed catalog entries and matching neutral templates; existing built-in versions remain available offline. The builder still rejects an unreviewed app update. See [what changed in 0.7.16](docs/RELEASE-0.7.16.md).
 
 On 2026-10-16, the builder matched all six installed originals on a V6 Plus with Heat Live 5.9.5. Selecting Heat Live alone saved one APK to Downloads. That APK passed signature checks, installed, and launched to the standard Android media permission screen on the source Plus. At the owner's request, this update was not tested for playback on a separate device.
 

@@ -66,8 +66,9 @@ BANNER_MARK = f'''<?xml version="1.0" encoding="utf-8"?>
 '''
 
 
-def apply(name: str) -> None:
-    decoded = ROOT / f"{name}-decoded"
+def apply(name: str, decoded: Path | None = None) -> None:
+    if decoded is None:
+        decoded = ROOT / f"{name}-decoded"
     if not decoded.is_dir():
         raise FileNotFoundError(decoded)
     drawable = decoded / "res" / "drawable"
