@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "revision": 2,
+  "revision": 3,
   "entries": [
     {
       "originalPackage": "com.google.heatlive",
@@ -61,6 +61,38 @@
       "templateUrl": "https://raw.githubusercontent.com/torrent329/vsee-app-builder/main/compatibility/templates/liveultraplus-581-template.apk",
       "templateEntries": 1843,
       "minSdk": 29,
+      "lib32Sha256": "103d3ed4b0a219520c3911c4c46f2ff2fce23200067b15687678e42c2b5c46d5",
+      "lib64Sha256": "003e750fd452c52b1ee524a98b794637f9cc7f481a2da6c527e0324bc3415ad6",
+      "pin32Offset": 731414,
+      "pin64Offset": 1006780
+    },
+    {
+      "originalPackage": "com.google.heatlive",
+      "versionName": "6.0.0",
+      "versionCode": 600,
+      "originalBytes": 24658540,
+      "originalSha256": "574e3686841a5ae41894cd082eaebfd3fc507c1fbd30228e98f6cfa670ca49a6",
+      "payloadSha256": "a8ff03ce07df67a4124c1f23405e0fb3c607c74d72245bf212b13025d88b3566",
+      "templateSha256": "80816dd536ed17466aba6f8224598b732e94d0e8900c68225f112ae60561ca2c",
+      "templateUrl": "https://raw.githubusercontent.com/torrent329/vsee-app-builder/main/compatibility/templates/heat-live-600-template.apk",
+      "templateEntries": 1801,
+      "minSdk": 26,
+      "lib32Sha256": "39107c0a48939deb9216ab532f0388d84a5d8b9e0fcbdea8289a698e5d04e179",
+      "lib64Sha256": "15b533a7c09ac1ec4f6e524d93780fcf50560e46bcb941895f7a3c2de35490ed",
+      "pin32Offset": 732809,
+      "pin64Offset": 1004476
+    },
+    {
+      "originalPackage": "com.google.heatvod",
+      "versionName": "6.9.9",
+      "versionCode": 699,
+      "originalBytes": 21108365,
+      "originalSha256": "a03689038e4eae796729b5bc33642d80f0ebb6cea5b217e04fb44396b1fbfd3b",
+      "payloadSha256": "cc08b1399357050a99a95c391eb3bce558965f34abeaf872f0a2b15201f66aea",
+      "templateSha256": "b64fa63e78b1399b426743af55842073a105f17e30fda6bed4c3214f961841b9",
+      "templateUrl": "https://raw.githubusercontent.com/torrent329/vsee-app-builder/main/compatibility/templates/heatvod-699-template.apk",
+      "templateEntries": 1471,
+      "minSdk": 26,
       "lib32Sha256": "103d3ed4b0a219520c3911c4c46f2ff2fce23200067b15687678e42c2b5c46d5",
       "lib64Sha256": "003e750fd452c52b1ee524a98b794637f9cc7f481a2da6c527e0324bc3415ad6",
       "pin32Offset": 731414,

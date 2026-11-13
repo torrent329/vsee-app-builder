@@ -17,6 +17,8 @@ The signed catalog adds these reviewed versions when **Check compatibility** has
 | Original app | Version | Generated file |
 | --- | --- | --- |
 | Heat Live | 5.9.6 | `Heat-Live-V6-Owner-5.9.6.apk` |
+| Heat Live | 6.0.0 | `Heat-Live-V6-Owner-6.0.0.apk` |
+| HeatVod | 6.9.9 | `HeatVod-V6-Owner-6.9.9.apk` |
 | Live Ultra | 5.8.1 | `Live-Ultra-V6-Owner-5.8.1.apk` |
 | Live Ultra+ | 5.8.1 | `Live-Ultra-Plus-V6-Owner-5.8.1.apk` |
 
