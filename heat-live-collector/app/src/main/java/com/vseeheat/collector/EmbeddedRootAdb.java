@@ -17,7 +17,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-/** Starts the tested root ADB relay bundled in this APK before reading the V6 profile. */
+/** Verifies existing root ADB or starts the bundled relay before reading the V6 profile. */
 final class EmbeddedRootAdb {
     interface Progress { void update(String message); }
 
@@ -45,6 +45,16 @@ final class EmbeddedRootAdb {
             // The normal app UID cannot read the system-owned relay journal.
             // RootTrial checks it while running under the verified system UID.
             if (healthy(status)) return;
+            // An owner may have opened root ADB separately for this session.
+            // Verify that listener and use it without stopping or restarting adbd.
+            if ("tcp:5555".equals(prop("service.adb.listen_addrs"))) {
+                stage = "EXISTING_VERIFY";
+                TrustedRootAdb existing = TrustedRootAdb.findActive();
+                if (!existing.isExternalTcp()) throw new IllegalStateException();
+                existing.verifyRootShell();
+                progress.update("Using the existing V6 access");
+                return;
+            }
             if (line(status, "LAN_STATE=needs_cleanup")) {
                 stage = "CLEANUP";
                 action(context, source, "lan_off");

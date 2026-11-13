@@ -11,11 +11,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-/** Finds only the active journaled V6 helper socket, then checks the root peer. */
+/** Finds a journaled relay or an existing V6 root TCP listener. */
 final class TrustedRootAdb {
     private static final String ORIGINAL_BASE = "/data/system/v6-root-check";
     private static final String PC_ONLY_BASE = "/data/system/v6-pc-only-adb";
@@ -23,13 +26,28 @@ final class TrustedRootAdb {
     private static final String ROOT_PROPERTY = "service.adb.root";
     private static final String BOOT_ID = "/proc/sys/kernel/random/boot_id";
     private final String socketPath;
+    private final boolean externalTcp;
 
-    private TrustedRootAdb(String socketPath) {
+    private TrustedRootAdb(String socketPath, boolean externalTcp) {
         this.socketPath = socketPath;
+        this.externalTcp = externalTcp;
     }
 
     static TrustedRootAdb findActive() throws IOException {
         String target = commandOutput("/system/bin/getprop", LISTEN_PROPERTY).trim();
+        if ("tcp:5555".equals(target)) {
+            if (!"5555".equals(commandOutput("/system/bin/getprop",
+                    "service.adb.tcp.port").trim())
+                    || !"running".equals(commandOutput("/system/bin/getprop",
+                    "init.svc.adbd").trim())
+                    || !"1".equals(commandOutput("/system/bin/getprop",
+                    "ro.debuggable").trim())
+                    || !"1".equals(commandOutput("/system/bin/getprop",
+                    ROOT_PROPERTY).trim())) throw new IOException();
+            String secure = commandOutput("/system/bin/getprop", "ro.adb.secure").trim();
+            if (!secure.isEmpty() && !"0".equals(secure)) throw new IOException();
+            return new TrustedRootAdb(null, true);
+        }
         if (!target.startsWith("localfilesystem:")) throw new IOException();
         String path = target.substring("localfilesystem:".length());
         String base;
@@ -66,8 +84,10 @@ final class TrustedRootAdb {
                 || !"1".equals(commandOutput("/system/bin/getprop", ROOT_PROPERTY).trim())) {
             throw new IOException();
         }
-        return new TrustedRootAdb(path);
+        return new TrustedRootAdb(path, false);
     }
+
+    boolean isExternalTcp() { return externalTcp; }
 
     void verifyRootShell() throws IOException {
         if (!"0".equals(run(Read.UID).trim())) throw new IOException();
@@ -82,24 +102,34 @@ final class TrustedRootAdb {
     }
 
     private String run(Read type) throws IOException {
+        if (externalTcp) {
+            try (Socket socket = new Socket()) {
+                socket.connect(new InetSocketAddress(
+                        InetAddress.getByName("127.0.0.1"), 5555), 2000);
+                socket.setSoTimeout(6000);
+                return read(socket.getInputStream(), socket.getOutputStream(), type);
+            }
+        }
         try (LocalSocket socket = new LocalSocket()) {
             socket.connect(new LocalSocketAddress(socketPath,
                     LocalSocketAddress.Namespace.FILESYSTEM));
             socket.setSoTimeout(6000);
             if (socket.getPeerCredentials().getUid() != 0) throw new IOException();
-            switch (type) {
-                case UID:
-                    return PrivateAdbWire.readRootUid(socket.getInputStream(),
-                            socket.getOutputStream());
-                case SSAID:
-                    return PrivateAdbWire.readSsaid(socket.getInputStream(),
-                            socket.getOutputStream());
-                case PREFERENCE:
-                    return PrivateAdbWire.readPreference(socket.getInputStream(),
-                            socket.getOutputStream());
-                default:
-                    throw new IOException();
-            }
+            return read(socket.getInputStream(), socket.getOutputStream(), type);
+        }
+    }
+
+    private static String read(InputStream input, java.io.OutputStream output,
+                               Read type) throws IOException {
+        switch (type) {
+            case UID:
+                return PrivateAdbWire.readRootUid(input, output);
+            case SSAID:
+                return PrivateAdbWire.readSsaid(input, output);
+            case PREFERENCE:
+                return PrivateAdbWire.readPreference(input, output);
+            default:
+                throw new IOException();
         }
     }
 

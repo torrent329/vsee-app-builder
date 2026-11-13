@@ -6,11 +6,11 @@ The screen has two actions: **Check compatibility** and **Make APKs**. The build
 
 ## Current status
 
-Version **0.7.16** (`versionCode` 23) can fetch signed compatibility data for newer original apps. Catalog revision 3 adds Heat Live 6.0.0 and HeatVod 6.9.9 without changing the builder installer. **Check compatibility** downloads reviewed entries and matching neutral templates; existing built-in versions remain available offline. The builder still rejects an unreviewed app update. See [what changed in 0.7.16](docs/RELEASE-0.7.16.md) and [supported versions](docs/SUPPORTED-APPS.md).
+Version **0.7.17** (`versionCode` 24) can use an already open, verified root ADB session without closing it. It also starts the builder's temporary access when ADB is off. Catalog revision 3 adds Heat Live 6.0.0 and HeatVod 6.9.9. **Check compatibility** downloads reviewed entries and matching neutral templates; existing built-in versions remain available offline. The builder still rejects an unreviewed app update. See [what changed in 0.7.17](docs/RELEASE-0.7.17.md) and [supported versions](docs/SUPPORTED-APPS.md).
 
 On 2026-10-16, the builder matched all six installed originals on a V6 Plus with Heat Live 5.9.5. Selecting Heat Live alone saved one APK to Downloads. That APK passed signature checks, installed, and launched to the standard Android media permission screen on the source Plus. At the owner's request, this update was not tested for playback on a separate device.
 
-The last owner-tested version is **0.7.12-design-preview** (`versionCode` 19). On one factory-reset V6 and a 2017 Shield, the owner reported that all six APKs were exported and worked. Its SHA-256 is `11a2063ebc2ae0cd0f3b64aa09ece3d532e24123cdd2e2f600761a0e71ae8eba`.
+On 2026-11-13, version 0.7.17 matched all six installed originals on the V6 Plus and exported all six APKs to Downloads while the separately opened root ADB port stayed connected. Separate-device playback of these newly updated builds was not tested. Earlier, the owner tested version **0.7.12-design-preview** on a factory-reset V6 and a 2017 Shield and reported that all six APKs worked there.
 
 ## Use on your own box
 
