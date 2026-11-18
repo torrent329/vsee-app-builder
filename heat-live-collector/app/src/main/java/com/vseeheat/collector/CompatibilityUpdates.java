@@ -29,7 +29,6 @@ final class CompatibilityUpdates {
     private static final String PUBLIC_KEY_BASE64 =
             "MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEA2g0ZBp3b32qph6OnPibezb8jvYxY/d8FdW8MGpX09qucZppGhj2gj0e/AvLoC7MKPFoA8M4TV/tnwberp8bf/V5ifDqIU3hgqwNWbCXh0t5oSCwwkgAvxU+dyVSdkCW3nqPnqrnotGVxxkcWOQ1lz7hxAuUjZIj9nG9dgcIgvArMddMvZU2Qeldxut83NAuf+UKYm+GEdqjSx6ucnnayzVwaem54GFLyr3XRhPo/tNenwaFWowfmh7qzsVsuP4fFyulZVkxCSUbCzd3WYO2obC7sf56bHGx6EqueWvsPjkyXbbyXUIxvpApD2fodf9+qRD71W5/URSx5hFzk810vVr/hpxABeY8iL1OaNfjEvFEyYcQcsPJtzCz/rU3OpGD0Ln3wNr0OjDPtbFnw/lX9b1ao/kjVGrUmymXxFUGRnlYsh3/LaAgx7S2RVWcYGcnJjSEVrMpPreDPGX/y9uziE19AQzt8yKUq6exTWWtM4MWzRGdlntfLwHWV36ajfMarAgMBAAE=";
     private static final String PREFS = "compatibility_updates";
-    private static final long CHECK_INTERVAL_MS = 4L * 60 * 60 * 1000;
     private static final int MAX_CATALOG_BYTES = 64 * 1024;
     private static final int MAX_TEMPLATE_BYTES = 64 * 1024 * 1024;
 
@@ -37,24 +36,19 @@ final class CompatibilityUpdates {
 
     static void refreshAndPrepare(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        long now = System.currentTimeMillis();
-        long last = prefs.getLong("last_check_ms", 0);
-        if (now < last || now - last >= CHECK_INTERVAL_MS) {
-            try {
-                String envelope = new String(fetch(CATALOG_URL, MAX_CATALOG_BYTES),
-                        StandardCharsets.UTF_8);
-                JSONObject payload = verifiedPayload(envelope);
-                int revision = payload.getInt("revision");
-                if (revision >= prefs.getInt("highest_revision", 0)) {
-                    prefs.edit().putString("catalog", envelope)
-                            .putInt("highest_revision", revision)
-                            .putLong("last_check_ms", now).commit();
-                }
-            } catch (Exception ignored) {
-                // Offline or invalid updates never replace the last verified catalog.
-                prefs.edit().putLong("last_check_ms",
-                        now - CHECK_INTERVAL_MS + 10L * 60 * 1000).apply();
+        // This runs when the owner explicitly selects Check compatibility.
+        // Always fetch so a newly reviewed app update is available immediately.
+        try {
+            String envelope = new String(fetch(CATALOG_URL, MAX_CATALOG_BYTES),
+                    StandardCharsets.UTF_8);
+            JSONObject payload = verifiedPayload(envelope);
+            int revision = payload.getInt("revision");
+            if (revision >= prefs.getInt("highest_revision", 0)) {
+                prefs.edit().putString("catalog", envelope)
+                        .putInt("highest_revision", revision).commit();
             }
+        } catch (Exception ignored) {
+            // Offline or invalid updates never replace the last verified catalog.
         }
         try {
             JSONObject payload = cachedPayload(context);

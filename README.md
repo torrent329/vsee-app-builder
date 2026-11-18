@@ -6,11 +6,13 @@ The screen has two actions: **Check compatibility** and **Make APKs**. The build
 
 ## Current status
 
-Version **0.7.17** (`versionCode` 24) can use an already open, verified root ADB session without closing it. It also starts the builder's temporary access when ADB is off. Catalog revision 3 adds Heat Live 6.0.0 and HeatVod 6.9.9. **Check compatibility** downloads reviewed entries and matching neutral templates; existing built-in versions remain available offline. The builder still rejects an unreviewed app update. See [what changed in 0.7.17](docs/RELEASE-0.7.17.md) and [supported versions](docs/SUPPORTED-APPS.md).
+Version **0.7.18** (`versionCode` 25) checks for signed compatibility updates every time the owner selects **Check compatibility**. Catalog revision 4 adds Heat Live 6.0.2. The builder can use an already open, verified root ADB session without closing it, and starts temporary access when ADB is off. It still rejects an unreviewed app update. See [what changed in 0.7.18](docs/RELEASE-0.7.18.md) and [supported versions](docs/SUPPORTED-APPS.md).
 
 On 2026-10-16, the builder matched all six installed originals on a V6 Plus with Heat Live 5.9.5. Selecting Heat Live alone saved one APK to Downloads. That APK passed signature checks, installed, and launched to the standard Android media permission screen on the source Plus. At the owner's request, this update was not tested for playback on a separate device.
 
 On 2026-11-13, version 0.7.17 matched all six installed originals on the V6 Plus and exported all six APKs to Downloads while the separately opened root ADB port stayed connected. Separate-device playback of these newly updated builds was not tested. Earlier, the owner tested version **0.7.12-design-preview** on a factory-reset V6 and a 2017 Shield and reported that all six APKs worked there.
+
+On 2026-11-18, the builder matched the V6 Plus's original Heat Live 6.0.2 and exported a selected Heat Live APK while ADB stayed open. The APK passed signature and package checks. Both the generated app and the original reached the main activity on that V6 Plus and showed the same first-run data-loading screen; neither completed loading during this check. Separate-device playback remains unverified; a viewer reported that earlier generated live apps stalled at “Receiving Data” on a Google TV Streamer 4K.
 
 ## Use on your own box
 
